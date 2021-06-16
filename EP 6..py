@@ -6,7 +6,7 @@ import csv
 from datetime import datetime
 
 GUI = Tk()
-GUI.title('โปรแกรมบันทึกค่าใช้จ่าย by JOB')
+GUI.title('โปรแกรมบันทึกค่าใช้จ่าย V 1.0 by JOB')
 GUI.geometry('600x800+500+50')
 
 #---------------------------MENU--------------------------- from tkinter import *
