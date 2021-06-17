@@ -18,7 +18,7 @@ menubar.add_cascade(label='File',menu=filemenu)
 filemenu.add_command(label='Import CSV')
 #helpmenu
 def About():
-    messagebox.showinfo('เกี่ยวกับเรา','สวัสดีครับ นี่คือโปรแกรมที่พัฒนาโดยจ๊อบ')
+	messagebox.showinfo('เกี่ยวกับเรา','สวัสดีครับ นี่คือโปรแกรมที่พัฒนาโดยจ๊อบ')
 helpmenu = Menu(menubar,tearoff=0)
 menubar.add_cascade(label='Help',menu=helpmenu)
 helpmenu.add_command(label='About',command=About)
@@ -49,53 +49,53 @@ F1.pack()
 #F1.place(x=100,y=20)
 
 days = {'Mon':'จันทร์',
-        'Tue':'อังคาร',
-        'Wed':'พุธ',
-        'Thu':'พฤหัส',
-        'Fri':'ศุกร์',
-        'Sat':'เสาร์',
-        'Sun':'อาทิตย์'}
+		'Tue':'อังคาร',
+		'Wed':'พุธ',
+		'Thu':'พฤหัส',
+		'Fri':'ศุกร์',
+		'Sat':'เสาร์',
+		'Sun':'อาทิตย์'}
 
 def Save(event=None):
-    today = datetime.now().strftime('%a')
-    #print(today)
-    dt = datetime.now().strftime('%Y-%m-%d %H:%M')
-    transid = datetime.now().strftime('%Y%m%d%H%M%f')
-    expense = v_expense.get() 
-    price = v_price.get()
-    volume = v_volume.get()
+	today = datetime.now().strftime('%a')
+	#print(today)
+	dt = datetime.now().strftime('%Y-%m-%d %H:%M')
+	transid = datetime.now().strftime('%Y%m%d%H%M%f')
+	expense = v_expense.get() 
+	price = v_price.get()
+	volume = v_volume.get()
 
-    if expense == '':
-        messagebox.showerror('Error','กรุณากรอกข้อมูลค่าใช้จ่าย')
-        return
-    if price == '':
-        messagebox.showerror('Error','กรุณากรอกราคา')
-        return
-    if volume == '':
-        volume = 1
+	if expense == '':
+		messagebox.showerror('Error','กรุณากรอกข้อมูลค่าใช้จ่าย')
+		return
+	if price == '':
+		messagebox.showerror('Error','กรุณากรอกราคา')
+		return
+	if volume == '':
+		volume = 1
 
-    try:
-        total = float(volume)*float(price)
-        #print(' รายการ : {}, ราคา : {} บาท,'.format(expense,price))
-        text = ('รายการ : {}\nราคา : {} บาท\nจำนวน : {} ชิ้น\nรวม : {} บาท'.format(expense,price,volume,total))
-        v_result.set(text)
-        v_expense.set('') 
-        v_price.set('')
-        v_volume.set('')
+	try:
+		total = float(volume)*float(price)
+		#print(' รายการ : {}, ราคา : {} บาท,'.format(expense,price))
+		text = ('รายการ : {}\nราคา : {} บาท\nจำนวน : {} ชิ้น\nรวม : {} บาท'.format(expense,price,volume,total))
+		v_result.set(text)
+		v_expense.set('') 
+		v_price.set('')
+		v_volume.set('')
 
-        with open('savedata.csv','a',encoding='utf8',newline=('')) as f:
-            fw = csv.writer(f) 
-            data = [transid,days[today],dt,expense,price,volume,total]
-            fw.writerow(data)  
-        E1.focus()
-        update_table()
+		with open('savedata.csv','a',encoding='utf8',newline=('')) as f:
+			fw = csv.writer(f) 
+			data = [transid,days[today],dt,expense,price,volume,total]
+			fw.writerow(data)  
+		E1.focus()
+		update_table()
 
-    except: # Exception as e ดูว่าผิดพลาดเรื่องอะไร แล้วเก็บไว้ที่ e
-        print('error')
-        messagebox.showerror('Error','กรุณากรอกข้อมูลใหม่ คุณกรอกตัวเลขผิด')
-        v_expense.set('') 
-        v_price.set('')
-        v_volume.set('')
+	except: # Exception as e ดูว่าผิดพลาดเรื่องอะไร แล้วเก็บไว้ที่ e
+		print('error')
+		messagebox.showerror('Error','กรุณากรอกข้อมูลใหม่ คุณกรอกตัวเลขผิด')
+		v_expense.set('') 
+		v_price.set('')
+		v_volume.set('')
 
 GUI.bind('<Return>',Save)
 
@@ -136,13 +136,13 @@ result.pack(pady=20)
 #---------------------- TAB2 -------------------------
 
 def read_csv():
-    with open('savedata.csv',newline='',encoding='utf8') as f:
-        fr = csv.reader(f)
-        data = list(fr)
-    return data
-        # print(data)
-        # for a,b,c,d,e,f in data:
-        #    print(a)
+	with open('savedata.csv',newline='',encoding='utf8') as f:
+		fr = csv.reader(f)
+		data = list(fr)
+	return data
+		# print(data)
+		# for a,b,c,d,e,f in data:
+		#    print(a)
 
 L = ttk.Label(tap2,text='ตารางแสดงผลลัพท์ทั้งหมด',font=FONT1).pack(pady=20)
 header = ['ID','วัน','เวลา','รายการ','ค่าใช้จ่าย','จำนวน','ราคารวม']
@@ -150,52 +150,56 @@ resulttable = ttk.Treeview(tap2,columns=header,show='headings',height=20)
 resulttable.pack()
 
 # for i in range(len(header)):
-    # resulttable.heading(header[i],text=header[i])
+	# resulttable.heading(header[i],text=header[i])
 
 for h in header:
-    resulttable.heading(h,text=h)
+	resulttable.heading(h,text=h)
 
 headerwidth = [120,70,120,150,80,80,80]
 
 for h,w in zip(header,headerwidth):
-    resulttable.column(h,width=w)
+	resulttable.column(h,width=w)
 
 alltransaction = {}
 
 def updateCSV():
-    with open('savedata.csv','w',newline='',encoding='utf8') as f: #'w' is replace 'a' is append(stack writer)
-        fw = csv.writer(f)
-        #prepare data to write (convert dictionary to list)
-        data = list(alltransaction.values())
-        fw.writerows(data)
+	with open('savedata.csv','w',newline='',encoding='utf8') as f: #'w' is replace 'a' is append(stack writer)
+		fw = csv.writer(f)
+		#prepare data to write (convert dictionary to list)
+		data = list(alltransaction.values())
+		fw.writerows(data)
 
 def update_table():
-    resulttable.delete(*resulttable.get_children()) #get_children เป็นรหัสพิเศษ ส่วน * เป็นการคล้ายๆ forloop
-    #วิธี forloop
-    #for c in resulttable.get_children():
-    #    resulttable.delete(c)
-    try:
-        data = read_csv()
-        for i in data:
-            #create dictionary for find data in csv
-            alltransaction[i[0]] = i 
-            resulttable.insert('','0',value=i) #0 is beginpoint, 'end' is insert at the end point
-        print(alltransaction)
-    except:
-        print('No File')
+	resulttable.delete(*resulttable.get_children()) #get_children เป็นรหัสพิเศษ ส่วน * เป็นการคล้ายๆ forloop
+	#วิธี forloop
+	#for c in resulttable.get_children():
+	#    resulttable.delete(c)
+	try:
+		data = read_csv()
+		for i in data:
+			#create dictionary for find data in csv
+			alltransaction[i[0]] = i 
+			resulttable.insert('','0',value=i) #0 is beginpoint, 'end' is insert at the end point
+		print(alltransaction)
+	except:
+		print('No File')
 
 def deleterecord(event=None):
-    #print('Delete')
-    if messagebox.askyesno('Delete Record','Do you want to remove?') == True:
-        select = resulttable.selection()
-        data = resulttable.item(select)
-        data = data['values']
-        deleteid = data[0]
-        #print(alltransaction)
-        del alltransaction[str(deleteid)]
-        #print(alltransaction)
-        updateCSV()
-        update_table()
+	#print('Delete')
+	if messagebox.askyesno('Delete Record','Do you want to remove?') == True:
+		try:
+			select = resulttable.selection()
+			data = resulttable.item(select)
+			data = data['values']
+			deleteid = data[0]
+			#print(alltransaction)
+			del alltransaction[str(deleteid)]
+			#print(alltransaction)
+			updateCSV()
+			update_table()
+		except:
+			messagebox.showerror('Error','Please select your record.')
+		
 
 GUI.bind('<Delete>',deleterecord)
 
