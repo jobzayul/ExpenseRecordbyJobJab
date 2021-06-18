@@ -7,21 +7,34 @@ from datetime import datetime
 
 GUI = Tk()
 GUI.title('โปรแกรมบันทึกค่าใช้จ่าย V 1.0 by JOB')
-GUI.geometry('750x800+500+50')
+#GUI.geometry('750x800+500+50')
+w = 750
+h = 800
+ws = GUI.winfo_screenwidth()
+hs = GUI.winfo_screenheight()
+
+x = (ws/2)-(w/2)
+y = (hs/2)-(h/2)
+
+GUI.geometry(f'{w}x{h}+{x:.0f}+{y:.0f}')
+
 
 #---------------------------MENU--------------------------- from tkinter import *
 menubar = Menu(GUI)
 GUI.config(menu=menubar)
+
 #file menu
 filemenu = Menu(menubar,tearoff=0) #tearoff=0 ปิดตัวขีดๆ ลองลบออกละกัน
 menubar.add_cascade(label='File',menu=filemenu)
 filemenu.add_command(label='Import CSV')
+
 #helpmenu
 def About():
 	messagebox.showinfo('เกี่ยวกับเรา','สวัสดีครับ นี่คือโปรแกรมที่พัฒนาโดยจ๊อบ')
 helpmenu = Menu(menubar,tearoff=0)
 menubar.add_cascade(label='Help',menu=helpmenu)
 helpmenu.add_command(label='About',command=About)
+
 #donatemenu
 donatemenu = Menu(menubar,tearoff=0)
 menubar.add_cascade(label='Donate',menu=donatemenu)
@@ -61,21 +74,32 @@ def Save(event=None):
 	#print(today)
 	dt = datetime.now().strftime('%Y-%m-%d %H:%M')
 	transid = datetime.now().strftime('%Y%m%d%H%M%f')
-	expense = v_expense.get() 
-	price = v_price.get()
-	volume = v_volume.get()
+	expense = v_expense.get()
 
+	########## Check Data input ############
 	if expense == '':
 		messagebox.showerror('Error','กรุณากรอกข้อมูลค่าใช้จ่าย')
 		return
-	if price == '':
-		messagebox.showerror('Error','กรุณากรอกราคา')
-		return
-	if volume == '':
-		volume = 1
+	else:
+		try:
+			price = float(v_price.get())
+		except:
+			messagebox.showerror('Error','กรุณากรอกราคา')
+
+		try:
+			volume = int(v_volume.get())
+		except:
+			volume = 1
+	########################################
+	
+	#if price == '':
+	#	messagebox.showerror('Error','กรุณากรอกราคา')
+	#	return
+	#if volume == '':
+	#	volume = 1
 
 	try:
-		total = float(volume)*float(price)
+		total = volume*price
 		#print(' รายการ : {}, ราคา : {} บาท,'.format(expense,price))
 		text = ('รายการ : {}\nราคา : {} บาท\nจำนวน : {} ชิ้น\nรวม : {} บาท'.format(expense,price,volume,total))
 		v_result.set(text)
@@ -91,8 +115,8 @@ def Save(event=None):
 		update_table()
 
 	except: # Exception as e ดูว่าผิดพลาดเรื่องอะไร แล้วเก็บไว้ที่ e
-		print('error')
-		messagebox.showerror('Error','กรุณากรอกข้อมูลใหม่ คุณกรอกตัวเลขผิด')
+		#print('error')
+		#messagebox.showerror('Error','กรุณากรอกข้อมูลใหม่ คุณกรอกตัวเลขผิด')
 		v_expense.set('') 
 		v_price.set('')
 		v_volume.set('')
@@ -178,9 +202,10 @@ def update_table():
 		data = read_csv()
 		for i in data:
 			#create dictionary for find data in csv
+			#print(i, 'loop', alltransaction)
 			alltransaction[i[0]] = i 
 			resulttable.insert('','0',value=i) #0 is beginpoint, 'end' is insert at the end point
-		print(alltransaction)
+		#print(alltransaction)
 	except:
 		print('No File')
 
@@ -192,7 +217,7 @@ def deleterecord(event=None):
 			data = resulttable.item(select)
 			data = data['values']
 			deleteid = data[0]
-			#print(alltransaction)
+			#print('alltransaction is',alltransaction)
 			del alltransaction[str(deleteid)]
 			#print(alltransaction)
 			updateCSV()
@@ -206,6 +231,80 @@ GUI.bind('<Delete>',deleterecord)
 
 BDelete = ttk.Button(tap2,text='Delete',command=deleterecord)
 BDelete.place(x=100,y=550)
+
+######################### Rightclick Menu Tab2 ###########################
+def Editrecord():
+	POPUP = Toplevel() #same as Tk()
+	POPUP.title('Edit')
+	w = 500
+	h = 400
+	ws = GUI.winfo_screenwidth()
+	hs = GUI.winfo_screenheight()
+
+	x = (ws/2)-(w/2)
+	y = (hs/2)-(h/2)
+
+	POPUP.geometry(f'{w}x{h}+{x:.0f}+{y:.0f}')
+
+	def Edit():
+		#print(data)
+		data[3] = v_expense.get()
+		data[4] = float(v_price.get())
+		data[5] = int(v_volume.get())
+		data[6] = data[4]*data[5]
+		#print(alltransaction)
+		alltransaction[str(editid)] = data
+		#print(alltransaction)
+		updateCSV()
+		update_table()
+		POPUP.destroy()
+
+
+	select = resulttable.selection()
+	data = resulttable.item(select)
+	data = data['values']
+	editid = data[0]
+	#print(data)
+
+	L = ttk.Label(POPUP,text='รายการค่าใช้จ่าย',font=FONT1) 
+	L.pack()
+	v_expense = StringVar() 
+	v_expense.set(data[3])
+	E1 = ttk.Entry(POPUP,textvariable=v_expense,font=FONT1)
+	E1.pack()
+
+	L = ttk.Label(POPUP,text='ราคา (บาท)',font=FONT1)
+	L.pack()
+	v_price = StringVar()
+	v_price.set(data[4])
+	E2 = ttk.Entry(POPUP,textvariable=v_price,font=FONT1)
+	E2.pack()
+
+	L = ttk.Label(POPUP,text='จำนวน (ชิ้น)',font=FONT1)
+	L.pack()
+	v_volume = StringVar()
+	v_volume.set(data[5])
+	E3 = ttk.Entry(POPUP,textvariable=v_volume,font=FONT1)
+	E3.pack()
+
+	saveimage = PhotoImage(file='Save.png').subsample(8)
+	B1 = ttk.Button(POPUP,text='Save',image=saveimage,compound='left',command=Edit)
+	B1.pack(ipadx=30,ipady=10,pady=10)
+
+	POPUP.mainloop()
+
+
+rightclick = Menu(GUI,tearoff=0)
+rightclick.add_command(label='Edit',command=Editrecord)
+rightclick.add_command(label='Delete',command=deleterecord)
+
+def menupopup(event=None):
+	#print(event.x_root, event.y_root) is a location where you right click
+	rightclick.post(event.x_root, event.y_root) #show pop-up when you rightclick
+
+
+resulttable.bind('<Button-3>',menupopup)
+##########################################################################
 
 update_table()
 
